@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Booking</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Welcome to the Event Booking Page</h2>
+        <form action="/book-event" method="POST">
+            <label for="event">Event:</label>
+            <input type="text" id="event" name="event" required>
+            <label for="date">Date:</label>
+            <input type="date" id="date" name="date" required>
+            <button type="submit">Book Event</button>
+        </form>
+        <button id="fetch-details">Get Event Details</button>
+        <div id="event-details"></div>
+        <p><a href="/logout">Logout</a></p>
+    </div>
+    <script>
+        document.getElementById('fetch-details').addEventListener('click', function() {
+            fetch('/get-events')
+                .then(response => response.json())
+                .then(data => {
+                    let eventDetailsDiv = document.getElementById('event-details');
+                    eventDetailsDiv.innerHTML = '<h3>Event Details</h3>';
+                    if (data.length > 0) {
+                        data.forEach(event => {
+                            eventDetailsDiv.innerHTML += `
+                                <p>
+                                    <strong>Event:</strong> ${event.event}<br>
+                                    <strong>Date:</strong> ${event.date}
+                                </p>`;
+                        });
+                    } else {
+                        eventDetailsDiv.innerHTML += '<p>No events booked yet.</p>';
+                    }
+                })
+                .catch(error => console.error('Error fetching event details:', error));
+        });
+    </script>
+</body>
+</html>
